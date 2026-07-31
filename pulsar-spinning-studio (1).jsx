@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
-  Bike, Volume2, Lightbulb, Snowflake, Dumbbell, UserCheck,
-  Star, MapPin, Phone, Mail, Instagram, MessageCircle,
-  ChevronDown, Menu, X, ArrowRight, Activity, Music, Zap, HeartPulse, Car, Navigation
+  Bike, Volume2, Lightbulb, Dumbbell, UserCheck,
+  MapPin, Phone, Mail, Instagram, MessageCircle,
+  ChevronDown, Menu, X, ArrowRight, Activity, Music, Zap, HeartPulse, Navigation
 } from "lucide-react";
 
 /* ============================================================
@@ -335,7 +335,7 @@ function Logo({ size = "text-2xl", withMark = true }) {
 /* ---------------- Navbar ---------------- */
 const NAV_LINKS = [
   ["Home", "#home"], ["Sobre", "#sobre"], ["Estrutura", "#estrutura"], ["Planos", "#planos"],
-  ["Instrutores", "#equipe"], ["Galeria", "#galeria"], ["Contato", "#contato"],
+  ["Galeria", "#galeria"], ["Contato", "#contato"],
 ];
 
 function Navbar() {
@@ -493,7 +493,6 @@ const ESTRUTURA = [
   { icon: Bike, t: "Spinning Premium", d: "Bikes profissionais de última geração, ajuste milimétrico e resistência precisa para cada nível." },
   { icon: Volume2, t: "Som Profissional", d: "Sistema de áudio imersivo que transforma cada playlist em combustível para o pedal." },
   { icon: Lightbulb, t: "Iluminação Inteligente", d: "Luzes cênicas sincronizadas com o ritmo da aula, criando atmosfera de show." },
-  { icon: Snowflake, t: "Ambiente Climatizado", d: "Climatização por insuflamento que mantém a temperatura ideal do início ao sprint final." },
   { icon: Dumbbell, t: "Treinos Exclusivos", d: "Metodologias próprias com periodização de intensidade, cadência e resistência." },
   { icon: UserCheck, t: "Acompanhamento Personalizado", d: "Evolução monitorada de perto, com orientação individual dentro da energia do coletivo." },
 ];
@@ -612,8 +611,8 @@ function Localizacao() {
               </div>
             </div>
             <div className="absolute bottom-5 left-5 glass-strong rounded-2xl px-5 py-3">
-              <div className="font-display text-white text-sm" style={{ fontWeight: 600 }}>Bom Jesus dos Perdões — SP</div>
-              <div className="font-mono text-silver" style={{ fontSize: 10, letterSpacing: ".2em" }}>23°08'S · 46°28'W</div>
+              <div className="font-display text-white text-sm" style={{ fontWeight: 600 }}>Rua Rima Ramos Ferreira, 90</div>
+              <div className="font-mono text-silver" style={{ fontSize: 10, letterSpacing: ".2em" }}>Bom Jesus dos Perdões — SP</div>
             </div>
           </div>
         </Reveal>
@@ -626,7 +625,6 @@ function Localizacao() {
           </Reveal>
           <div className="mt-8 flex flex-col gap-4">
             {[
-              { icon: Car, t: "Estacionamento", d: "Vagas disponíveis para você chegar sem preocupação." },
               { icon: Navigation, t: "Fácil acesso", d: "Poucos minutos das principais vias da cidade." },
               { icon: MapPin, t: "Região central", d: "Perto de tudo o que importa no seu dia a dia." },
             ].map((it, i) => (
@@ -643,7 +641,7 @@ function Localizacao() {
           </div>
           <Reveal delay={520}>
             <a
-              href="https://www.google.com/maps/search/?api=1&query=Bom+Jesus+dos+Perd%C3%B5es+SP"
+              href="https://maps.app.goo.gl/cxWbm53KyAu3P5Sx6"
               target="_blank" rel="noreferrer" className="btn btn-primary mt-10"
             >
               Como chegar <Navigation size={15} />
@@ -655,98 +653,7 @@ function Localizacao() {
   );
 }
 
-/* ---------------- Equipe ---------------- */
-const TEAM = [
-  { nome: "Maioli", cargo: "Sócia · Maioli Beauty Studio", ig: "@maiolibeautystudio", grad: "linear-gradient(135deg,#3a3a42,#15151a)" },
-  { nome: "Kátia Dias", cargo: "Sócia", ig: "@katiadias", grad: "linear-gradient(135deg,#33333b,#121216)" },
-  { nome: "Hector", cargo: "Sócio · Hector Dev", ig: "@hectordev", grad: "linear-gradient(135deg,#2c2c34,#101014)" },
-];
 
-function Equipe() {
-  return (
-    <section id="equipe" className="py-28 lg:py-36 px-6">
-      <div className="max-w-5xl mx-auto">
-        <Reveal><span className="eyebrow">Equipe</span></Reveal>
-        <Reveal delay={120}>
-          <h3 className="font-display text-white mt-6 mb-16 tracking-tight" style={{ fontSize: "clamp(30px,3.6vw,46px)", fontWeight: 700 }}>
-            Quem faz a PULSAR <span className="text-silver">pulsar.</span>
-          </h3>
-        </Reveal>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          {TEAM.map((p, i) => (
-            <Reveal key={p.nome} delay={i * 150}>
-              <div className="team-card glass card-hover rounded-3xl overflow-hidden">
-                <div className="relative overflow-hidden" style={{ aspectRatio: "4/4.6" }}>
-                  {/* Placeholder de foto — substitua por imagem real (P&B com hover colorido) */}
-                  <div className="team-photo absolute inset-0 flex items-center justify-center" style={{ background: p.grad }}>
-                    <span className="font-display silver-gradient" style={{ fontSize: 64, fontWeight: 800 }}>
-                      {p.nome.split(" ").map(n => n[0]).slice(0, 2).join("")}
-                    </span>
-                  </div>
-                  <div className="absolute inset-x-0 bottom-0 h-24" style={{ background: "linear-gradient(to top, rgba(8,8,8,.9), transparent)" }} />
-                </div>
-                <div className="p-7">
-                  <h4 className="font-display text-white text-lg" style={{ fontWeight: 700 }}>{p.nome}</h4>
-                  <p className="text-silver text-sm font-light mt-1">{p.cargo}</p>
-                  <a href={`https://instagram.com/${p.ig.replace("@", "")}`} target="_blank" rel="noreferrer"
-                    className="inline-flex items-center gap-2 mt-4 text-silver-hi text-sm font-mono" style={{ fontSize: 12, letterSpacing: ".08em" }}>
-                    <Instagram size={15} strokeWidth={1.6} /> {p.ig}
-                  </a>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- Depoimentos ---------------- */
-const DEPOS = [
-  { nome: "Mariana S.", txt: "Nunca imaginei que treinar pudesse ser tão viciante. A energia das aulas é surreal — parece um show, não um treino." },
-  { nome: "Rafael T.", txt: "A iluminação, o som, a turma pedalando junto... você entra cansado e sai renovado. Melhor hora do meu dia." },
-  { nome: "Camila R.", txt: "Estrutura impecável e acompanhamento de verdade. Em três meses minha resistência mudou completamente." },
-  { nome: "Diego M.", txt: "A PULSAR virou minha válvula de escape. Comunidade incrível, aulas desafiadoras e um ambiente que motiva." },
-];
-
-function Depoimentos() {
-  const [idx, setIdx] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % DEPOS.length), 5000);
-    return () => clearInterval(t);
-  }, []);
-  return (
-    <section className="py-28 px-6 bg-graphite" style={{ borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
-      <div className="max-w-3xl mx-auto text-center">
-        <Reveal><span className="eyebrow justify-center">Depoimentos</span></Reveal>
-        <Reveal delay={120}>
-          <div className="relative mt-12" style={{ minHeight: 220 }}>
-            {DEPOS.map((d, i) => (
-              <div key={d.nome} className="absolute inset-0 flex flex-col items-center transition-all duration-700"
-                style={{ opacity: i === idx ? 1 : 0, transform: `translateY(${i === idx ? 0 : 16}px)`, pointerEvents: i === idx ? "auto" : "none" }}>
-                <div className="flex gap-1 mb-6">
-                  {[...Array(5)].map((_, s) => <Star key={s} size={16} className="text-white" fill="currentColor" strokeWidth={0} />)}
-                </div>
-                <p className="font-display text-silver-hi text-xl md:text-2xl font-light leading-relaxed" style={{ fontWeight: 300 }}>
-                  "{d.txt}"
-                </p>
-                <span className="font-mono text-silver mt-6" style={{ fontSize: 12, letterSpacing: ".25em" }}>— {d.nome}</span>
-              </div>
-            ))}
-          </div>
-        </Reveal>
-        <div className="flex justify-center gap-3 mt-8">
-          {DEPOS.map((_, i) => (
-            <button key={i} onClick={() => setIdx(i)} aria-label={`Depoimento ${i + 1}`}
-              className="rounded-full transition-all duration-500"
-              style={{ width: i === idx ? 28 : 8, height: 8, background: i === idx ? "var(--silver-hi)" : "rgba(255,255,255,.18)" }} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ---------------- Galeria ---------------- */
 const GALERIA = [
@@ -1079,8 +986,6 @@ export default function PulsarLanding() {
         <Estrutura />
         <Experiencia />
         <Localizacao />
-        <Equipe />
-        <Depoimentos />
         <Galeria />
         <Planos />
         <Experimental />
