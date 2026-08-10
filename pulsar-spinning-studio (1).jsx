@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Bike, Volume2, Lightbulb, Dumbbell, UserCheck,
-  MapPin, Phone, Mail, Instagram, MessageCircle,
+  MapPin, Mail, Instagram, MessageCircle,
   ChevronDown, Menu, X, ArrowRight, Activity, Music, Zap, HeartPulse, Navigation
 } from "lucide-react";
 
 /* ============================================================
    CONFIG / CONTATO — edite apenas aqui para trocar número ou mensagens
    ============================================================ */
-const WHATSAPP = "55SEU_NUMERO_AQUI"; // ← substitua pelos dígitos reais (ex: 5511999998888)
+const WHATSAPP = "5511933302350";
 const INSTAGRAM = "@pulsarspinning";
 
 const MENSAGENS = {
@@ -847,10 +847,9 @@ function Contato() {
   };
 
   const canais = [
-    { icon: MessageCircle, t: "WhatsApp", d: "(11) 90000-0000", href: linkWhatsApp("formulario") },
+    { icon: MessageCircle, t: "WhatsApp", d: "(11) 93330-2350", href: linkWhatsApp("formulario") },
     { icon: Instagram, t: "Instagram", d: "@pulsarspinning", href: "https://instagram.com/pulsarspinning" },
-    { icon: Phone, t: "Telefone", d: "(11) 0000-0000", href: "tel:+551100000000" },
-    { icon: Mail, t: "Email", d: "contato@pulsarstudio.com.br", href: "mailto:contato@pulsarstudio.com.br" },
+    { icon: Mail, t: "Email", d: "pulsarkmh@gmail.com", href: "mailto:pulsarkmh@gmail.com" },
     { icon: MapPin, t: "Localização", d: "Bom Jesus dos Perdões — SP", href: "#localizacao" },
   ];
   return (
