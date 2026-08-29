@@ -188,7 +188,7 @@ html{ scroll-behavior:smooth; }
 
 /* URL do sistema de agendamento. Troque aqui quando o subdominio
    app.pulsaracademia.com.br estiver no ar. */
-const SISTEMA = "https://pulsar-sistema.vercel.app";
+const SISTEMA = "https://app.pulsaracademia.com.br";
 
 /* WhatsApp do estudio, ja com a mensagem preenchida. */
 const WHATSAPP = "https://wa.me/5511933302350?text=Ol%C3%A1!%20Quero%20agendar%20uma%20aula%20no%20PULSAR%20%F0%9F%9A%B4";
