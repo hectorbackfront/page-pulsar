@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Bike, Volume2, Lightbulb, Snowflake, Dumbbell, UserCheck,
-  Star, MapPin, Phone, Mail, Instagram, MessageCircle,
-  ChevronDown, Menu, X, ArrowRight, Activity, Music, Zap, HeartPulse, Car, Navigation
+  MapPin, Mail, Instagram, MessageCircle,
+  Menu, X, ArrowRight, Activity, Music, Zap, HeartPulse, Navigation
 } from "lucide-react";
 
 /* ============================================================
@@ -97,9 +97,30 @@ html{ scroll-behavior:smooth; }
 .screen-h{ min-height:100vh; min-height:100svh; }
 
 /* ---- Ajustes responsivos ---- */
+/* Tablet */
+@media (max-width:1024px){
+  section{ padding-left:24px; padding-right:24px; }
+}
+/* Celular */
 @media (max-width:640px){
   .btn{ width:100%; padding:15px 24px; }
-  .masonry{ column-gap:12px; }
+  /* botao dentro de card/linha nao estica */
+  .btn-inline{ width:auto !important; }
+  .eyebrow{ font-size:10px; letter-spacing:.25em; }
+  .eyebrow::before{ width:18px; }
+  /* respiro menor entre secoes */
+  section{ padding-top:72px !important; padding-bottom:72px !important; }
+  #home{ padding-top:0 !important; padding-bottom:0 !important; }
+  .glass, .glass-strong{ backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+}
+/* Celular pequeno (iPhone SE, 320-380px) */
+@media (max-width:400px){
+  .hero-title{ letter-spacing:.18em !important; padding-left:.18em !important; }
+  .hero-sub{ letter-spacing:.35em !important; padding-left:.35em !important; font-size:10px !important; }
+}
+/* Telas baixas deitadas: nao forcar 100vh */
+@media (max-height:560px) and (orientation:landscape){
+  .screen-h{ min-height:auto; padding-top:110px; padding-bottom:70px; }
 }
 
 /* ---- Smoke / atmosphere ---- */
@@ -128,20 +149,6 @@ html{ scroll-behavior:smooth; }
 .reveal{ opacity:0; transform:translateY(36px); filter:blur(6px); transition:opacity 1s ease, transform 1s cubic-bezier(.2,.8,.2,1), filter 1s ease; }
 .reveal.is-visible{ opacity:1; transform:translateY(0); filter:blur(0); }
 
-/* ---- Galeria ---- */
-.masonry{ columns:3; column-gap:16px; }
-@media (max-width:1023px){ .masonry{ columns:2; } }
-@media (max-width:639px){ .masonry{ columns:1; } }
-.gal-item{ break-inside:avoid; margin-bottom:16px; border-radius:20px; overflow:hidden; position:relative; }
-.gal-item .gal-bg{ transition:transform .8s cubic-bezier(.2,.8,.2,1), filter .8s; filter:grayscale(60%); }
-.gal-item:hover .gal-bg{ transform:scale(1.06); filter:grayscale(0%); }
-.gal-item .gal-overlay{ opacity:0; transition:opacity .5s; }
-.gal-item:hover .gal-overlay{ opacity:1; }
-
-/* ---- Equipe ---- */
-.team-photo{ filter:grayscale(100%); transition:filter .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
-.team-card:hover .team-photo{ filter:grayscale(0%); transform:scale(1.04); }
-
 /* ---- Navbar ---- */
 .nav{ transition:background .5s, border-color .5s, backdrop-filter .5s, padding .5s; border-bottom:1px solid transparent; }
 .nav.scrolled{
@@ -157,11 +164,6 @@ html{ scroll-behavior:smooth; }
 }
 .nav-link:hover{ color:var(--white); }
 .nav-link:hover::after{ width:100%; }
-
-/* ---- FAQ ---- */
-.faq-body{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .5s cubic-bezier(.2,.8,.2,1); }
-.faq-body.open{ grid-template-rows:1fr; }
-.faq-body > div{ overflow:hidden; }
 
 /* ---- Form ---- */
 .field{
@@ -183,6 +185,13 @@ html{ scroll-behavior:smooth; }
   html{ scroll-behavior:auto; }
 }
 `;
+
+/* URL do sistema de agendamento. Troque aqui quando o subdominio
+   app.pulsaracademia.com.br estiver no ar. */
+const SISTEMA = "https://pulsar-sistema.vercel.app";
+
+/* WhatsApp do estudio, ja com a mensagem preenchida. */
+const WHATSAPP = "https://wa.me/5511933302350?text=Ol%C3%A1!%20Quero%20agendar%20uma%20aula%20no%20PULSAR%20%F0%9F%9A%B4";
 
 /* ---------------- Hooks ---------------- */
 function useInView(threshold = 0.15) {
@@ -280,8 +289,8 @@ function Logo({ size = "text-2xl", withMark = true }) {
 
 /* ---------------- Navbar ---------------- */
 const NAV_LINKS = [
-  ["Home", "#home"], ["Sobre", "#sobre"], ["Estrutura", "#estrutura"], ["Planos", "#planos"],
-  ["Instrutores", "#equipe"], ["Galeria", "#galeria"], ["Contato", "#contato"],
+  ["Home", "#home"], ["Sobre", "#sobre"], ["Estrutura", "#estrutura"],
+  ["Planos", "#planos"], ["Contato", "#contato"],
 ];
 
 function Navbar() {
@@ -303,7 +312,7 @@ function Navbar() {
           ))}
         </nav>
         <div className="hidden lg:block">
-          <a href="#experimental" className="btn btn-primary" style={{ padding: "12px 26px", fontSize: 13 }}>
+          <a href={`${SISTEMA}/?tipo=avulsa`} className="btn btn-primary" style={{ padding: "12px 26px", fontSize: 13 }}>
             Agende sua aula
           </a>
         </div>
@@ -312,11 +321,11 @@ function Navbar() {
         </button>
       </div>
       {open && (
-        <div className="lg:hidden glass-strong border-t px-6 py-6 flex flex-col gap-5" style={{ borderColor: "var(--line)" }}>
+        <div className="lg:hidden glass-strong border-t px-6 py-6 flex flex-col gap-5" style={{ borderColor: "var(--line)", maxHeight: "calc(100vh - 76px)", overflowY: "auto" }}>
           {NAV_LINKS.map(([label, href]) => (
             <a key={href} href={href} onClick={() => setOpen(false)} className="text-silver-hi font-display text-lg">{label}</a>
           ))}
-          <a href="#experimental" onClick={() => setOpen(false)} className="btn btn-primary mt-2">Agende sua aula</a>
+          <a href={`${SISTEMA}/?tipo=avulsa`} onClick={() => setOpen(false)} className="btn btn-primary mt-2">Agende sua aula</a>
         </div>
       )}
     </header>
@@ -337,7 +346,7 @@ function Hero() {
       <div className="smoke smoke-2" />
 
       {/* grade sutil de piso */}
-      <div className="absolute inset-x-0 bottom-0 pointer-events-none" style={{
+      <div className="absolute inset-x-0 bottom-0 pointer-events-none overflow-hidden" style={{
         height: "38vh",
         background: "repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 80px)",
         maskImage: "linear-gradient(to top, rgba(0,0,0,.6), transparent)",
@@ -348,11 +357,11 @@ function Hero() {
       <div className="relative z-10 px-6 flex flex-col items-center" style={{ paddingTop: 90 }}>
         <Reveal>
           <div className="flex flex-col items-center gap-3 mb-10">
-            <PulsarMark size={110} className="beat text-white mb-4" style={{ filter: "drop-shadow(0 0 30px rgba(255,255,255,.25))" }} />
-            <h1 className="font-display silver-gradient" style={{ fontSize: "clamp(40px,6.5vw,80px)", fontWeight: 700, lineHeight: 1, letterSpacing: ".3em", paddingLeft: ".3em" }}>
+            <PulsarMark size={typeof window !== "undefined" && window.innerWidth < 640 ? 80 : 110} className="beat text-white mb-4" style={{ filter: "drop-shadow(0 0 30px rgba(255,255,255,.25))" }} />
+            <h1 className="font-display silver-gradient hero-title" style={{ fontSize: "clamp(34px,6.5vw,80px)", fontWeight: 700, lineHeight: 1, letterSpacing: ".3em", paddingLeft: ".3em" }}>
               PULSAR
             </h1>
-            <span className="font-mono text-silver" style={{ fontSize: 11, letterSpacing: ".6em", paddingLeft: ".6em" }}>SPINNING STUDIO</span>
+            <span className="font-mono text-silver hero-sub" style={{ fontSize: 11, letterSpacing: ".6em", paddingLeft: ".6em" }}>SPINNING STUDIO</span>
           </div>
         </Reveal>
 
@@ -376,8 +385,8 @@ function Hero() {
         <Reveal delay={500}>
           <div className="flex flex-col sm:flex-row gap-4 mt-10">
             <a href="#sobre" className="btn btn-ghost">Conheça o Studio</a>
-            <a href="#experimental" className="btn btn-primary">
-              Agendar Aula Experimental <ArrowRight size={16} />
+            <a href={`${SISTEMA}/?tipo=avulsa`} className="btn btn-primary">
+              Agendar minha aula <ArrowRight size={16} />
             </a>
           </div>
         </Reveal>
@@ -390,8 +399,8 @@ function Hero() {
 /* ---------------- Sobre ---------------- */
 function Sobre() {
   const stats = [
-    { big: <Counter target={500} prefix="+" />, label: "alunos" },
-    { big: <Counter target={1000} prefix="+" />, label: "aulas realizadas" },
+    { big: <Counter target={15} />, label: "bikes por aula" },
+    { big: <Counter target={45} suffix="min" />, label: "de treino guiado" },
     { big: "Alta", label: "performance" },
     { big: "Comunidade", label: "exclusiva" },
   ];
@@ -534,7 +543,7 @@ function Localizacao() {
     <section id="localizacao" className="py-28 lg:py-36 px-6 bg-graphite" style={{ borderTop: "1px solid var(--line)" }}>
       <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-14 items-center">
         <Reveal>
-          <div className="glass rounded-3xl overflow-hidden relative" style={{ minHeight: 380 }}>
+          <div className="glass rounded-3xl overflow-hidden relative" style={{ minHeight: "clamp(260px,45vw,380px)" }}>
             {/* Mapa estilizado — troque por embed do Google Maps no projeto real */}
             <div className="absolute inset-0" style={{
               background:
@@ -562,7 +571,6 @@ function Localizacao() {
           </Reveal>
           <div className="mt-8 flex flex-col gap-4">
             {[
-              { icon: Car, t: "Estacionamento", d: "Vagas disponíveis para você chegar sem preocupação." },
               { icon: Navigation, t: "Fácil acesso", d: "Poucos minutos das principais vias da cidade." },
               { icon: MapPin, t: "Região central", d: "Perto de tudo o que importa no seu dia a dia." },
             ].map((it, i) => (
@@ -591,153 +599,13 @@ function Localizacao() {
   );
 }
 
-/* ---------------- Equipe ---------------- */
-const TEAM = [
-  { nome: "Maioli", cargo: "Sócia · Maioli Beauty Studio", ig: "@maiolibeautystudio", grad: "linear-gradient(135deg,#3a3a42,#15151a)" },
-  { nome: "Kátia Dias", cargo: "Sócia", ig: "@katiadias", grad: "linear-gradient(135deg,#33333b,#121216)" },
-  { nome: "Hector", cargo: "Sócio · Hector Dev", ig: "@hectordev", grad: "linear-gradient(135deg,#2c2c34,#101014)" },
-];
-
-function Equipe() {
-  return (
-    <section id="equipe" className="py-28 lg:py-36 px-6">
-      <div className="max-w-5xl mx-auto">
-        <Reveal><span className="eyebrow">Equipe</span></Reveal>
-        <Reveal delay={120}>
-          <h3 className="font-display text-white mt-6 mb-16 tracking-tight" style={{ fontSize: "clamp(30px,3.6vw,46px)", fontWeight: 700 }}>
-            Quem faz a PULSAR <span className="text-silver">pulsar.</span>
-          </h3>
-        </Reveal>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          {TEAM.map((p, i) => (
-            <Reveal key={p.nome} delay={i * 150}>
-              <div className="team-card glass card-hover rounded-3xl overflow-hidden">
-                <div className="relative overflow-hidden" style={{ aspectRatio: "4/4.6" }}>
-                  {/* Placeholder de foto — substitua por imagem real (P&B com hover colorido) */}
-                  <div className="team-photo absolute inset-0 flex items-center justify-center" style={{ background: p.grad }}>
-                    <span className="font-display silver-gradient" style={{ fontSize: 64, fontWeight: 800 }}>
-                      {p.nome.split(" ").map(n => n[0]).slice(0, 2).join("")}
-                    </span>
-                  </div>
-                  <div className="absolute inset-x-0 bottom-0 h-24" style={{ background: "linear-gradient(to top, rgba(8,8,8,.9), transparent)" }} />
-                </div>
-                <div className="p-7">
-                  <h4 className="font-display text-white text-lg" style={{ fontWeight: 700 }}>{p.nome}</h4>
-                  <p className="text-silver text-sm font-light mt-1">{p.cargo}</p>
-                  <a href={`https://instagram.com/${p.ig.replace("@", "")}`} target="_blank" rel="noreferrer"
-                    className="inline-flex items-center gap-2 mt-4 text-silver-hi text-sm font-mono" style={{ fontSize: 12, letterSpacing: ".08em" }}>
-                    <Instagram size={15} strokeWidth={1.6} /> {p.ig}
-                  </a>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- Depoimentos ---------------- */
-const DEPOS = [
-  { nome: "Mariana S.", txt: "Nunca imaginei que treinar pudesse ser tão viciante. A energia das aulas é surreal — parece um show, não um treino." },
-  { nome: "Rafael T.", txt: "A iluminação, o som, a turma pedalando junto... você entra cansado e sai renovado. Melhor hora do meu dia." },
-  { nome: "Camila R.", txt: "Estrutura impecável e acompanhamento de verdade. Em três meses minha resistência mudou completamente." },
-  { nome: "Diego M.", txt: "A PULSAR virou minha válvula de escape. Comunidade incrível, aulas desafiadoras e um ambiente que motiva." },
-];
-
-function Depoimentos() {
-  const [idx, setIdx] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % DEPOS.length), 5000);
-    return () => clearInterval(t);
-  }, []);
-  return (
-    <section className="py-28 px-6 bg-graphite" style={{ borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
-      <div className="max-w-3xl mx-auto text-center">
-        <Reveal><span className="eyebrow justify-center">Depoimentos</span></Reveal>
-        <Reveal delay={120}>
-          <div className="relative mt-12" style={{ minHeight: 220 }}>
-            {DEPOS.map((d, i) => (
-              <div key={d.nome} className="absolute inset-0 flex flex-col items-center transition-all duration-700"
-                style={{ opacity: i === idx ? 1 : 0, transform: `translateY(${i === idx ? 0 : 16}px)`, pointerEvents: i === idx ? "auto" : "none" }}>
-                <div className="flex gap-1 mb-6">
-                  {[...Array(5)].map((_, s) => <Star key={s} size={16} className="text-white" fill="currentColor" strokeWidth={0} />)}
-                </div>
-                <p className="font-display text-silver-hi text-xl md:text-2xl font-light leading-relaxed" style={{ fontWeight: 300 }}>
-                  "{d.txt}"
-                </p>
-                <span className="font-mono text-silver mt-6" style={{ fontSize: 12, letterSpacing: ".25em" }}>— {d.nome}</span>
-              </div>
-            ))}
-          </div>
-        </Reveal>
-        <div className="flex justify-center gap-3 mt-8">
-          {DEPOS.map((_, i) => (
-            <button key={i} onClick={() => setIdx(i)} aria-label={`Depoimento ${i + 1}`}
-              className="rounded-full transition-all duration-500"
-              style={{ width: i === idx ? 28 : 8, height: 8, background: i === idx ? "var(--silver-hi)" : "rgba(255,255,255,.18)" }} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- Galeria ---------------- */
-const GALERIA = [
-  { h: 340, label: "Sala de aula", grad: "linear-gradient(160deg,#26262e,#0c0c0f)" },
-  { h: 260, label: "Bikes premium", grad: "linear-gradient(200deg,#1e1e26,#0a0a0d)" },
-  { h: 300, label: "Iluminação cênica", grad: "linear-gradient(140deg,#2c2c36,#101014)" },
-  { h: 280, label: "Energia coletiva", grad: "linear-gradient(180deg,#22222a,#0b0b0e)" },
-  { h: 360, label: "Ride noturno", grad: "linear-gradient(150deg,#191920,#08080a)" },
-  { h: 250, label: "Detalhe da bike", grad: "linear-gradient(210deg,#28282f,#0d0d10)" },
-];
-
-function Galeria() {
-  const [light, setLight] = useState(null);
-  return (
-    <section id="galeria" className="py-28 lg:py-36 px-6">
-      <div className="max-w-7xl mx-auto">
-        <Reveal><span className="eyebrow">Galeria</span></Reveal>
-        <Reveal delay={120}>
-          <h3 className="font-display text-white mt-6 mb-14 tracking-tight" style={{ fontSize: "clamp(30px,3.6vw,46px)", fontWeight: 700 }}>
-            A PULSAR <span className="text-silver">em movimento.</span>
-          </h3>
-        </Reveal>
-        <div className="masonry">
-          {GALERIA.map((g, i) => (
-            <Reveal key={g.label} delay={i * 80}>
-              <button className="gal-item w-full text-left border-0 p-0 block" onClick={() => setLight(g)} aria-label={g.label}>
-                <div className="gal-bg w-full flex items-end p-6" style={{ height: g.h, background: g.grad }}>
-                  <span className="font-mono text-silver" style={{ fontSize: 10, letterSpacing: ".3em", textTransform: "uppercase" }}>{g.label}</span>
-                </div>
-                <div className="gal-overlay absolute inset-0 flex items-center justify-center glass-strong">
-                  <span className="font-display text-white text-sm" style={{ fontWeight: 600 }}>Ampliar</span>
-                </div>
-              </button>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-      {light && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6" style={{ background: "rgba(4,4,5,.92)", backdropFilter: "blur(10px)" }} onClick={() => setLight(null)}>
-          <button className="absolute top-6 right-6 text-white" aria-label="Fechar"><X size={28} /></button>
-          <div className="rounded-3xl w-full max-w-4xl flex items-end p-10" style={{ height: "70vh", background: light.grad }}>
-            <span className="font-display text-white text-2xl" style={{ fontWeight: 700 }}>{light.label}</span>
-          </div>
-        </div>
-      )}
-    </section>
-  );
-}
-
 /* ---------------- Planos ---------------- */
 const PLANOS = [
-  { nome: "Mensal", preco: "149", per: "/mês", destaque: false, itens: ["Aulas ilimitadas", "App de agendamento", "Acesso à comunidade"] },
-  { nome: "Trimestral", preco: "139", per: "/mês", destaque: false, itens: ["Tudo do Mensal", "Avaliação física", "Prioridade no agendamento"] },
-  { nome: "Semestral", preco: "129", per: "/mês", destaque: true, itens: ["Tudo do Trimestral", "Acompanhamento de evolução", "1 convidado por mês"] },
-  { nome: "Anual", preco: "119", per: "/mês", destaque: false, itens: ["Tudo do Semestral", "Kit exclusivo PULSAR", "Eventos fechados"] },
+  { freq: 1, nome: "1x por semana", preco: "99,90", itens: ["1 aula por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
+  { freq: 2, nome: "2x por semana", preco: "139,90", itens: ["2 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
+  { freq: 3, nome: "3x por semana", preco: "169,90", destaque: true, itens: ["3 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
+  { freq: 4, nome: "4x por semana", preco: "209,90", itens: ["4 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
+  { freq: 5, nome: "5x por semana", preco: "239,90", itens: ["5 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
 ];
 
 function Planos() {
@@ -750,7 +618,7 @@ function Planos() {
             Escolha o seu ritmo.
           </h3>
         </Reveal>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 items-stretch">
           {PLANOS.map((p, i) => (
             <Reveal key={p.nome} delay={i * 100} className="h-full">
               <div className={`glass card-hover rounded-3xl p-8 h-full flex flex-col relative ${p.destaque ? "" : ""}`}
@@ -764,8 +632,8 @@ function Planos() {
                 <span className="font-mono text-silver" style={{ fontSize: 11, letterSpacing: ".3em", textTransform: "uppercase" }}>{p.nome}</span>
                 <div className="mt-5 flex items-baseline gap-1">
                   <span className="text-silver text-sm">R$</span>
-                  <span className="font-display silver-gradient" style={{ fontSize: 44, fontWeight: 800 }}>{p.preco}</span>
-                  <span className="text-silver text-sm font-light">{p.per}</span>
+                  <span className="font-display silver-gradient" style={{ fontSize: 34, fontWeight: 800 }}>{p.preco}</span>
+                  <span className="text-silver text-sm font-light">/mês</span>
                 </div>
                 <ul className="mt-7 flex flex-col gap-3 flex-1">
                   {p.itens.map((it) => (
@@ -775,19 +643,41 @@ function Planos() {
                     </li>
                   ))}
                 </ul>
-                <a href="#experimental" className={`btn mt-8 w-full ${p.destaque ? "btn-primary" : "btn-ghost"}`} style={{ padding: "13px 20px", fontSize: 13 }}>
+                <a href={`${SISTEMA}/?plano=${p.freq}x`} className={`btn mt-8 w-full ${p.destaque ? "btn-primary" : "btn-ghost"}`} style={{ padding: "13px 20px", fontSize: 13 }}>
                   Quero começar
                 </a>
               </div>
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={500}>
+          <div className="glass rounded-3xl p-8 mt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <span className="font-mono text-silver" style={{ fontSize: 11, letterSpacing: ".3em", textTransform: "uppercase" }}>Sem plano</span>
+              <h4 className="font-display text-white text-xl mt-3" style={{ fontWeight: 700 }}>Aula avulsa</h4>
+              <p className="text-silver text-sm font-light mt-2" style={{ maxWidth: 460 }}>
+                Sem mensalidade. Escolha o dia, pague online e sua bike fica reservada.
+                Fins de semana são sempre avulsos.
+              </p>
+            </div>
+            <div className="flex flex-col sm:items-center gap-4 shrink-0 w-full md:w-auto">
+              <div className="flex items-baseline gap-1">
+                <span className="text-silver text-sm">R$</span>
+                <span className="font-display silver-gradient" style={{ fontSize: 40, fontWeight: 800 }}>30</span>
+              </div>
+              <a href={`${SISTEMA}/?tipo=avulsa`} className="btn btn-ghost" style={{ padding: "13px 28px", fontSize: 13 }}>
+                Agendar avulsa
+              </a>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
 }
 
-/* ---------------- Aula Experimental ---------------- */
+/* ---------------- Primeira aula ---------------- */
 function Experimental() {
   return (
     <section id="experimental" className="relative py-32 px-6 overflow-hidden">
@@ -799,60 +689,20 @@ function Experimental() {
         </Reveal>
         <Reveal delay={120}>
           <h3 className="font-display tracking-tight" style={{ fontSize: "clamp(32px,5vw,58px)", fontWeight: 800, lineHeight: 1.08 }}>
-            <span className="text-white">Experimente gratuitamente</span><br />
-            <span className="silver-gradient">a energia da PULSAR.</span>
+            <span className="text-white">Sua segunda aula é</span><br />
+            <span className="silver-gradient">por nossa conta.</span>
           </h3>
         </Reveal>
         <Reveal delay={260}>
-          <p className="text-silver mt-6 text-lg font-light">Sua primeira pedalada é por nossa conta. Sem compromisso.</p>
+          <p className="text-silver mt-6 text-lg font-light">
+            Pague sua primeira aula avulsa e ganhe a segunda de presente. Sem plano, sem fidelidade.
+          </p>
         </Reveal>
         <Reveal delay={380}>
-          <a href="#contato" className="btn btn-primary mt-10" style={{ padding: "20px 52px", fontSize: 16 }}>
-            Agendar Aula <ArrowRight size={18} />
+          <a href={`${SISTEMA}/?tipo=avulsa`} className="btn btn-primary mt-10 w-full sm:w-auto" style={{ padding: "18px 40px", fontSize: 15 }}>
+            Agendar minha aula <ArrowRight size={18} />
           </a>
         </Reveal>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- FAQ ---------------- */
-const FAQS = [
-  { q: "Como funciona?", a: "Você agenda sua aula pelo WhatsApp ou pelo site, chega 15 minutos antes para o ajuste da bike e vive 45 minutos de treino guiado com música, iluminação cênica e energia coletiva." },
-  { q: "Preciso levar bicicleta?", a: "Não. O estúdio conta com bikes profissionais de spinning, ajustadas individualmente para o seu biotipo antes de cada aula." },
-  { q: "Existe estacionamento?", a: "Sim. Temos vagas disponíveis próximas ao estúdio, na região central de Bom Jesus dos Perdões, com fácil acesso." },
-  { q: "Posso fazer aula experimental?", a: "Pode — e é gratuita. Agende pelo botão do site ou pelo WhatsApp e venha sentir a experiência PULSAR sem compromisso." },
-  { q: "Como faço minha matrícula?", a: "Após a aula experimental, você escolhe o plano ideal (mensal, trimestral, semestral ou anual) e finaliza a matrícula em minutos, direto no estúdio ou pelo WhatsApp." },
-];
-
-function Faq() {
-  const [open, setOpen] = useState(0);
-  return (
-    <section className="py-28 px-6 bg-graphite" style={{ borderTop: "1px solid var(--line)" }}>
-      <div className="max-w-3xl mx-auto">
-        <Reveal><span className="eyebrow">FAQ</span></Reveal>
-        <Reveal delay={120}>
-          <h3 className="font-display text-white mt-6 mb-12 tracking-tight" style={{ fontSize: "clamp(28px,3.4vw,42px)", fontWeight: 700 }}>
-            Perguntas frequentes.
-          </h3>
-        </Reveal>
-        <div className="flex flex-col gap-4">
-          {FAQS.map((f, i) => (
-            <Reveal key={f.q} delay={i * 80}>
-              <div className="glass rounded-2xl overflow-hidden">
-                <button onClick={() => setOpen(open === i ? -1 : i)}
-                  className="w-full flex items-center justify-between px-7 py-5 text-left">
-                  <span className="font-display text-white text-base" style={{ fontWeight: 600 }}>{f.q}</span>
-                  <ChevronDown size={18} className="text-silver transition-transform duration-500 shrink-0"
-                    style={{ transform: open === i ? "rotate(180deg)" : "none" }} />
-                </button>
-                <div className={`faq-body ${open === i ? "open" : ""}`}>
-                  <div><p className="text-silver text-sm font-light leading-relaxed px-7 pb-6">{f.a}</p></div>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -863,10 +713,9 @@ function Contato() {
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ nome: "", tel: "", msg: "" });
   const canais = [
-    { icon: MessageCircle, t: "WhatsApp", d: "(11) 90000-0000", href: "https://wa.me/5511900000000" },
-    { icon: Instagram, t: "Instagram", d: "@pulsarspinning", href: "https://instagram.com/pulsarspinning" },
-    { icon: Phone, t: "Telefone", d: "(11) 0000-0000", href: "tel:+551100000000" },
-    { icon: Mail, t: "Email", d: "contato@pulsarstudio.com.br", href: "mailto:contato@pulsarstudio.com.br" },
+    { icon: MessageCircle, t: "WhatsApp", d: "(11) 93330-2350", href: WHATSAPP },
+    { icon: Instagram, t: "Instagram", d: "@pulsar.spinning", href: "https://instagram.com/pulsar.spinning" },
+    { icon: Mail, t: "Email", d: "pulsarkmh@gmail.com", href: "mailto:pulsarkmh@gmail.com" },
     { icon: MapPin, t: "Localização", d: "Bom Jesus dos Perdões — SP", href: "#localizacao" },
   ];
   return (
@@ -895,24 +744,27 @@ function Contato() {
           </div>
         </div>
         <Reveal delay={200}>
-          <div className="glass rounded-3xl p-9">
-            <h4 className="font-display text-white text-xl mb-7" style={{ fontWeight: 700 }}>Agende sua aula experimental</h4>
-            {sent ? (
-              <div className="text-center py-14">
-                <HeartPulse className="beat text-white mx-auto mb-5" size={32} strokeWidth={1.4} />
-                <p className="font-display text-white text-lg" style={{ fontWeight: 600 }}>Recebido!</p>
-                <p className="text-silver text-sm font-light mt-2">Em breve entraremos em contato para confirmar sua aula.</p>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-4">
-                <input className="field" placeholder="Seu nome" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
-                <input className="field" placeholder="WhatsApp" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} />
-                <textarea className="field" rows={4} placeholder="Qual horário prefere treinar?" value={form.msg} onChange={(e) => setForm({ ...form, msg: e.target.value })} />
-                <button className="btn btn-primary w-full mt-2" onClick={() => setSent(true)}>
-                  Enviar mensagem <ArrowRight size={15} />
-                </button>
-              </div>
-            )}
+          <div className="glass rounded-3xl p-9 flex flex-col justify-center h-full">
+            <HeartPulse className="beat text-white mb-6 opacity-90" size={32} strokeWidth={1.3} />
+            <h4 className="font-display text-white text-xl" style={{ fontWeight: 700 }}>Agende pelo sistema</h4>
+            <p className="text-silver text-sm font-light leading-relaxed mt-3">
+              Escolha o dia e o horário, pague online e sua bike fica reservada na hora.
+              Leva menos de dois minutos.
+            </p>
+            <a href={`${SISTEMA}/?tipo=avulsa`} className="btn btn-primary w-full mt-8">
+              Agendar minha aula <ArrowRight size={15} />
+            </a>
+            <div className="flex items-center gap-4 my-6">
+              <span className="flex-1" style={{ height: 1, background: "var(--line)" }} />
+              <span className="font-mono text-silver" style={{ fontSize: 10, letterSpacing: ".25em" }}>OU</span>
+              <span className="flex-1" style={{ height: 1, background: "var(--line)" }} />
+            </div>
+            <p className="text-silver text-sm font-light text-center">
+              Ficou com dúvida ou travou no agendamento?
+            </p>
+            <a href={WHATSAPP} target="_blank" rel="noreferrer" className="btn btn-ghost w-full mt-4">
+              <MessageCircle size={15} /> Falar no WhatsApp
+            </a>
           </div>
         </Reveal>
       </div>
@@ -930,8 +782,12 @@ function Footer() {
           Mais que um treino. Uma experiência que te move.
         </p>
         <div className="flex gap-5">
-          {[Instagram, MessageCircle, Mail].map((I, i) => (
-            <a key={i} href="#contato" className="glass card-hover rounded-full p-3.5" aria-label="Rede social">
+          {[
+            { I: Instagram, href: "https://instagram.com/pulsar.spinning", label: "Instagram" },
+            { I: MessageCircle, href: WHATSAPP, label: "WhatsApp" },
+            { I: Mail, href: "mailto:pulsarkmh@gmail.com", label: "Email" },
+          ].map(({ I, href, label }) => (
+            <a key={label} href={href} target="_blank" rel="noreferrer" className="glass card-hover rounded-full p-3.5" aria-label={label}>
               <I size={17} strokeWidth={1.5} className="text-silver-hi" />
             </a>
           ))}
@@ -940,6 +796,10 @@ function Footer() {
         <p className="font-mono text-silver" style={{ fontSize: 10, letterSpacing: ".2em" }}>
           © {new Date().getFullYear()} PULSAR SPINNING STUDIO · TODOS OS DIREITOS RESERVADOS
         </p>
+        <a href="https://instagram.com/hector_dev.br" target="_blank" rel="noreferrer"
+          className="font-mono text-silver" style={{ fontSize: 10, letterSpacing: ".2em", opacity: .7 }}>
+          SITE E SISTEMA POR @HECTOR_DEV.BR
+        </a>
       </div>
     </footer>
   );
@@ -957,12 +817,8 @@ export default function PulsarLanding() {
         <Estrutura />
         <Experiencia />
         <Localizacao />
-        <Equipe />
-        <Depoimentos />
-        <Galeria />
         <Planos />
         <Experimental />
-        <Faq />
         <Contato />
       </main>
       <Footer />
