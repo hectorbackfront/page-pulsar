@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 
 /* ============================================================
-   PULSAR SPINNING STUDIO — Landing Page Premium
+   PULSAR BIKE INDOOR — Landing Page Premium
    Paleta: #080808 · grafite · branco · prata · glassmorphism
    ============================================================ */
 
@@ -280,7 +280,7 @@ function Logo({ size = "text-2xl", withMark = true }) {
       <span className="font-display" style={{ fontWeight: 700 }}>
         <span className="silver-gradient" style={{ letterSpacing: ".28em" }}>PULSAR</span>
         <span className="block font-mono text-silver" style={{ fontSize: "0.3em", letterSpacing: ".5em", fontWeight: 400, marginTop: 5 }}>
-          SPINNING STUDIO
+          BIKE INDOOR
         </span>
       </span>
     </a>
@@ -361,7 +361,7 @@ function Hero() {
             <h1 className="font-display silver-gradient hero-title" style={{ fontSize: "clamp(34px,6.5vw,80px)", fontWeight: 700, lineHeight: 1, letterSpacing: ".3em", paddingLeft: ".3em" }}>
               PULSAR
             </h1>
-            <span className="font-mono text-silver hero-sub" style={{ fontSize: 11, letterSpacing: ".6em", paddingLeft: ".6em" }}>SPINNING STUDIO</span>
+            <span className="font-mono text-silver hero-sub" style={{ fontSize: 11, letterSpacing: ".6em", paddingLeft: ".6em" }}>BIKE INDOOR</span>
           </div>
         </Reveal>
 
@@ -601,11 +601,11 @@ function Localizacao() {
 
 /* ---------------- Planos ---------------- */
 const PLANOS = [
-  { freq: 1, nome: "1x por semana", preco: "99,90", itens: ["1 aula por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
-  { freq: 2, nome: "2x por semana", preco: "139,90", itens: ["2 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
-  { freq: 3, nome: "3x por semana", preco: "169,90", destaque: true, itens: ["3 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
-  { freq: 4, nome: "4x por semana", preco: "209,90", itens: ["4 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
-  { freq: 5, nome: "5x por semana", preco: "239,90", itens: ["5 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
+  { freq: 1, nome: "1x por semana", cheio: "99,90", preco: "89,91", itens: ["1 aula por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
+  { freq: 2, nome: "2x por semana", cheio: "139,90", preco: "125,91", itens: ["2 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
+  { freq: 3, nome: "3x por semana", cheio: "169,90", preco: "152,91", destaque: true, itens: ["3 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
+  { freq: 4, nome: "4x por semana", cheio: "209,90", preco: "188,91", itens: ["4 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
+  { freq: 5, nome: "5x por semana", cheio: "239,90", preco: "215,91", itens: ["5 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
 ];
 
 function Planos() {
@@ -618,6 +618,21 @@ function Planos() {
             Escolha o seu ritmo.
           </h3>
         </Reveal>
+        <Reveal delay={80}>
+          <div className="glass rounded-2xl px-6 py-5 mb-8 flex flex-col md:flex-row md:items-center gap-3 md:gap-6"
+            style={{ borderColor: "rgba(124,255,178,.25)" }}>
+            <span className="font-mono shrink-0" style={{ fontSize: 10, letterSpacing: ".2em", color: "#7CFFB2",
+              border: "1px solid rgba(124,255,178,.3)", background: "rgba(124,255,178,.08)",
+              borderRadius: 999, padding: "6px 14px" }}>
+              PREÇO DE FUNDADORA
+            </span>
+            <p className="text-silver text-sm font-light">
+              10% de desconto para as 100 primeiras alunas. Seu plano começa a valer na
+              inauguração, dia 12 de setembro.
+            </p>
+          </div>
+        </Reveal>
+
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 items-stretch">
           {PLANOS.map((p, i) => (
             <Reveal key={p.nome} delay={i * 100} className="h-full">
@@ -630,10 +645,18 @@ function Planos() {
                   </span>
                 )}
                 <span className="font-mono text-silver" style={{ fontSize: 11, letterSpacing: ".3em", textTransform: "uppercase" }}>{p.nome}</span>
-                <div className="mt-5 flex items-baseline gap-1">
-                  <span className="text-silver text-sm">R$</span>
-                  <span className="font-display silver-gradient" style={{ fontSize: 34, fontWeight: 800 }}>{p.preco}</span>
-                  <span className="text-silver text-sm font-light">/mês</span>
+                <div className="mt-5">
+                  <div className="text-silver text-sm" style={{ textDecoration: "line-through", opacity: .7 }}>
+                    R$ {p.cheio}/mês
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-1">
+                    <span className="text-silver text-sm">R$</span>
+                    <span className="font-display silver-gradient" style={{ fontSize: 34, fontWeight: 800 }}>{p.preco}</span>
+                    <span className="text-silver text-sm font-light">/mês</span>
+                  </div>
+                  <div className="font-mono mt-2" style={{ fontSize: 10, letterSpacing: ".15em", color: "#7CFFB2" }}>
+                    -10% PREÇO DE FUNDADORA
+                  </div>
                 </div>
                 <ul className="mt-7 flex flex-col gap-3 flex-1">
                   {p.itens.map((it) => (
@@ -794,7 +817,7 @@ function Footer() {
         </div>
         <EcgLine className="w-full max-w-sm" style={{ height: 32 }} />
         <p className="font-mono text-silver" style={{ fontSize: 10, letterSpacing: ".2em" }}>
-          © {new Date().getFullYear()} PULSAR SPINNING STUDIO · TODOS OS DIREITOS RESERVADOS
+          © {new Date().getFullYear()} PULSAR BIKE INDOOR · TODOS OS DIREITOS RESERVADOS
         </p>
         <a href="https://instagram.com/hector_dev.br" target="_blank" rel="noreferrer"
           className="font-mono text-silver" style={{ fontSize: 10, letterSpacing: ".2em", opacity: .7 }}>
