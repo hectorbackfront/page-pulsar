@@ -332,6 +332,64 @@ function Navbar() {
   );
 }
 
+/* ---------------- Contagem pra inauguracao ---------------- */
+const ABERTURA = new Date("2026-09-12T07:00:00-03:00");
+
+function Contagem() {
+  const calc = () => {
+    const falta = ABERTURA - new Date();
+    if (falta <= 0) return null;
+    return {
+      d: Math.floor(falta / 86400000),
+      h: Math.floor((falta / 3600000) % 24),
+      m: Math.floor((falta / 60000) % 60),
+      s: Math.floor((falta / 1000) % 60),
+    };
+  };
+
+  const [t, setT] = useState(calc);
+
+  useEffect(() => {
+    const id = setInterval(() => setT(calc()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const chegou = !t;
+
+  const Bloco = ({ n, rot }) => (
+    <div className="glass rounded-2xl px-4 py-3 text-center" style={{ minWidth: 68 }}>
+      <div className="font-display" style={{ fontSize: 26, fontWeight: 800, lineHeight: 1, color: "var(--white)" }}>
+        {String(n).padStart(2, "0")}
+      </div>
+      <div className="font-mono text-silver" style={{ fontSize: 9, letterSpacing: ".2em", marginTop: 5 }}>{rot}</div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col items-center gap-5">
+      <span className="font-mono" style={{ fontSize: 10, letterSpacing: ".3em", color: "#7CFFB2",
+        border: "1px solid rgba(124,255,178,.3)", background: "rgba(124,255,178,.08)",
+        borderRadius: 999, padding: "7px 18px" }}>
+        {chegou ? "É HOJE · INAUGURAÇÃO" : "INAUGURAÇÃO EM 12 DE SETEMBRO"}
+      </span>
+
+      {!chegou && (
+        <div className="flex gap-2 sm:gap-3">
+          <Bloco n={t.d} rot="DIAS" />
+          <Bloco n={t.h} rot="HORAS" />
+          <Bloco n={t.m} rot="MIN" />
+          <Bloco n={t.s} rot="SEG" />
+        </div>
+      )}
+
+      <a href={`${SISTEMA}/?tipo=avulsa`} className="btn btn-primary w-full sm:w-auto"
+        style={{ padding: "16px 40px", fontSize: 15 }}>
+        Garantir minha bike <ArrowRight size={17} />
+      </a>
+    </div>
+  );
+}
+
 /* ---------------- Hero ---------------- */
 function Hero() {
   return (
@@ -383,12 +441,13 @@ function Hero() {
         </Reveal>
 
         <Reveal delay={500}>
-          <div className="flex flex-col sm:flex-row gap-4 mt-10">
-            <a href="#sobre" className="btn btn-ghost">Conheça o Studio</a>
-            <a href={`${SISTEMA}/?tipo=avulsa`} className="btn btn-primary">
-              Agendar minha aula <ArrowRight size={16} />
-            </a>
+          <div className="mt-10">
+            <Contagem />
           </div>
+        </Reveal>
+
+        <Reveal delay={640}>
+          <a href="#sobre" className="btn btn-ghost mt-5">Conheça o Studio</a>
         </Reveal>
       </div>
 
