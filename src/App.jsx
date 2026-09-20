@@ -367,21 +367,6 @@ function Contagem() {
 
   return (
     <div className="flex flex-col items-center gap-5">
-      <span className="font-mono" style={{ fontSize: 10, letterSpacing: ".3em", color: "#7CFFB2",
-        border: "1px solid rgba(124,255,178,.3)", background: "rgba(124,255,178,.08)",
-        borderRadius: 999, padding: "7px 18px" }}>
-        {chegou ? "É HOJE · INAUGURAÇÃO" : "INAUGURAÇÃO EM 12 DE SETEMBRO"}
-      </span>
-
-      {!chegou && (
-        <div className="flex gap-2 sm:gap-3">
-          <Bloco n={t.d} rot="DIAS" />
-          <Bloco n={t.h} rot="HORAS" />
-          <Bloco n={t.m} rot="MIN" />
-          <Bloco n={t.s} rot="SEG" />
-        </div>
-      )}
-
       <a href={`${SISTEMA}/?tipo=avulsa`} className="btn btn-primary w-full sm:w-auto"
         style={{ padding: "16px 40px", fontSize: 15 }}>
         Garantir minha bike <ArrowRight size={17} />
@@ -459,7 +444,7 @@ function Hero() {
 function Sobre() {
   const stats = [
     { big: <Counter target={15} />, label: "bikes por aula" },
-    { big: <Counter target={45} suffix="min" />, label: "de treino guiado" },
+    { big: <Counter target={60} suffix="min" />, label: "de treino guiado" },
     { big: "Alta", label: "performance" },
     { big: "Comunidade", label: "exclusiva" },
   ];
