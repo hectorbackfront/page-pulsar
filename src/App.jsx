@@ -11,8 +11,6 @@ import {
    ============================================================ */
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-
 :root{
   --ink:#080808;
   --graphite:#121214;
@@ -289,8 +287,8 @@ function Logo({ size = "text-2xl", withMark = true }) {
 
 /* ---------------- Navbar ---------------- */
 const NAV_LINKS = [
-  ["Home", "#home"], ["Sobre", "#sobre"], ["Estrutura", "#estrutura"],
-  ["Planos", "#planos"], ["Contato", "#contato"],
+  ["Home", "#home"], ["Sobre", "#sobre"], ["Como funciona", "#como-funciona"],
+  ["Planos", "#planos"], ["Dúvidas", "#duvidas"], ["Contato", "#contato"],
 ];
 
 function Navbar() {
@@ -316,12 +314,12 @@ function Navbar() {
             Agende sua aula
           </a>
         </div>
-        <button className="lg:hidden text-white" onClick={() => setOpen(!open)} aria-label="Menu">
+        <button className="lg:hidden text-white" onClick={() => setOpen(!open)} aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open} aria-controls="menu-mobile" style={{ minWidth: 44, minHeight: 44, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
           {open ? <X size={26} /> : <Menu size={26} />}
         </button>
       </div>
       {open && (
-        <div className="lg:hidden glass-strong border-t px-6 py-6 flex flex-col gap-5" style={{ borderColor: "var(--line)", maxHeight: "calc(100vh - 76px)", overflowY: "auto" }}>
+        <div id="menu-mobile" className="lg:hidden glass-strong border-t px-6 py-6 flex flex-col gap-5" style={{ borderColor: "var(--line)", maxHeight: "calc(100vh - 76px)", overflowY: "auto" }}>
           {NAV_LINKS.map(([label, href]) => (
             <a key={href} href={href} onClick={() => setOpen(false)} className="text-silver-hi font-display text-lg">{label}</a>
           ))}
@@ -332,44 +330,13 @@ function Navbar() {
   );
 }
 
-/* ---------------- Contagem pra inauguracao ---------------- */
-const ABERTURA = new Date("2026-09-12T07:00:00-03:00");
-
-function Contagem() {
-  const calc = () => {
-    const falta = ABERTURA - new Date();
-    if (falta <= 0) return null;
-    return {
-      d: Math.floor(falta / 86400000),
-      h: Math.floor((falta / 3600000) % 24),
-      m: Math.floor((falta / 60000) % 60),
-      s: Math.floor((falta / 1000) % 60),
-    };
-  };
-
-  const [t, setT] = useState(calc);
-
-  useEffect(() => {
-    const id = setInterval(() => setT(calc()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const chegou = !t;
-
-  const Bloco = ({ n, rot }) => (
-    <div className="glass rounded-2xl px-4 py-3 text-center" style={{ minWidth: 68 }}>
-      <div className="font-display" style={{ fontSize: 26, fontWeight: 800, lineHeight: 1, color: "var(--white)" }}>
-        {String(n).padStart(2, "0")}
-      </div>
-      <div className="font-mono text-silver" style={{ fontSize: 9, letterSpacing: ".2em", marginTop: 5 }}>{rot}</div>
-    </div>
-  );
-
+/* ---------------- CTA principal do hero ---------------- */
+function HeroCTA() {
   return (
     <div className="flex flex-col items-center gap-5">
       <a href={`${SISTEMA}/?tipo=avulsa`} className="btn btn-primary w-full sm:w-auto"
         style={{ padding: "16px 40px", fontSize: 15 }}>
-        Garantir minha bike <ArrowRight size={17} />
+        Reservar minha bike <ArrowRight size={17} />
       </a>
     </div>
   );
@@ -400,7 +367,7 @@ function Hero() {
       <div className="relative z-10 px-6 flex flex-col items-center" style={{ paddingTop: 90 }}>
         <Reveal>
           <div className="flex flex-col items-center gap-3 mb-10">
-            <PulsarMark size={typeof window !== "undefined" && window.innerWidth < 640 ? 80 : 110} className="beat text-white mb-4" style={{ filter: "drop-shadow(0 0 30px rgba(255,255,255,.25))" }} />
+            <PulsarMark size={110} className="beat text-white mb-4" style={{ width: "clamp(80px,12vw,110px)", height: "auto", filter: "drop-shadow(0 0 30px rgba(255,255,255,.25))" }} />
             <h1 className="font-display silver-gradient hero-title" style={{ fontSize: "clamp(34px,6.5vw,80px)", fontWeight: 700, lineHeight: 1, letterSpacing: ".3em", paddingLeft: ".3em" }}>
               PULSAR
             </h1>
@@ -421,13 +388,13 @@ function Hero() {
 
         <Reveal delay={380}>
           <p className="text-silver mt-6 text-base md:text-lg font-light" style={{ maxWidth: 480 }}>
-            Uma nova forma de viver o Spinning em Bom Jesus dos Perdões.
+            Aulas guiadas de 60 minutos, até 15 bikes, luz e som de show. Reserve em menos de dois minutos.
           </p>
         </Reveal>
 
         <Reveal delay={500}>
           <div className="mt-10">
-            <Contagem />
+            <HeroCTA />
           </div>
         </Reveal>
 
@@ -644,12 +611,16 @@ function Localizacao() {
 }
 
 /* ---------------- Planos ---------------- */
+/* Promoção "Preço de fundadora": deixe false quando acabar (esconde banner, desconto e preço riscado).
+   ATENÇÃO: com false o site mostra o preço CHEIO. Confirme os valores atuais antes de publicar. */
+const FUNDADORA = false;
+
 const PLANOS = [
-  { freq: 1, nome: "1x por semana", cheio: "99,90", preco: "89,91", itens: ["1 aula por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
-  { freq: 2, nome: "2x por semana", cheio: "139,90", preco: "125,91", itens: ["2 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
-  { freq: 3, nome: "3x por semana", cheio: "169,90", preco: "152,91", destaque: true, itens: ["3 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
-  { freq: 4, nome: "4x por semana", cheio: "209,90", preco: "188,91", itens: ["4 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
-  { freq: 5, nome: "5x por semana", cheio: "239,90", preco: "215,91", itens: ["5 aulas por semana", "Agendamento pelo site", "Válido de segunda a sexta"] },
+  { freq: 1, nome: "1x por semana", cheio: "99,90", preco: "89,91", itens: ["1 aula por semana"] },
+  { freq: 2, nome: "2x por semana", cheio: "139,90", preco: "125,91", itens: ["2 aulas por semana"] },
+  { freq: 3, nome: "3x por semana", cheio: "169,90", preco: "152,91", destaque: true, itens: ["3 aulas por semana"] },
+  { freq: 4, nome: "4x por semana", cheio: "209,90", preco: "188,91", itens: ["4 aulas por semana"] },
+  { freq: 5, nome: "5x por semana", cheio: "239,90", preco: "215,91", itens: ["5 aulas por semana"] },
 ];
 
 function Planos() {
@@ -659,10 +630,32 @@ function Planos() {
         <Reveal><span className="eyebrow">Planos</span></Reveal>
         <Reveal delay={120}>
           <h3 className="font-display text-white mt-6 mb-16 tracking-tight" style={{ fontSize: "clamp(30px,3.6vw,46px)", fontWeight: 700 }}>
-            Escolha o seu ritmo.
+            Comece pela aula avulsa. <span className="text-silver">Fique pelo ritmo.</span>
           </h3>
         </Reveal>
+
+        <Reveal delay={60}>
+          <div className="glass rounded-3xl p-8 mb-10 flex flex-col md:flex-row items-center justify-between gap-6" style={{ borderColor: "rgba(255,255,255,.25)", background: "rgba(255,255,255,.055)" }}>
+            <div>
+              <span className="font-mono text-silver" style={{ fontSize: 11, letterSpacing: ".3em", textTransform: "uppercase" }}>Melhor jeito de começar</span>
+              <h4 className="font-display text-white text-xl mt-3" style={{ fontWeight: 700 }}>Aula avulsa: R$ 30</h4>
+              <p className="text-silver text-sm font-light mt-2" style={{ maxWidth: 460 }}>
+                Sem mensalidade e sem fidelidade. Escolha o dia, pague online e sua bike fica reservada.
+                Pague a primeira e a segunda é por nossa conta. Fins de semana são sempre avulsos.
+              </p>
+            </div>
+            <a href={`${SISTEMA}/?tipo=avulsa`} className="btn btn-primary shrink-0" style={{ padding: "15px 32px", fontSize: 14 }}>
+              Agendar minha aula <ArrowRight size={16} />
+            </a>
+          </div>
+        </Reveal>
+
         <Reveal delay={80}>
+          <p className="text-silver text-sm font-light mb-6">
+            Planos mensais valem de segunda a sexta e o agendamento é feito pelo site.
+          </p>
+        </Reveal>
+        {FUNDADORA && <Reveal delay={80}>
           <div className="glass rounded-2xl px-6 py-5 mb-8 flex flex-col md:flex-row md:items-center gap-3 md:gap-6"
             style={{ borderColor: "rgba(124,255,178,.25)" }}>
             <span className="font-mono shrink-0" style={{ fontSize: 10, letterSpacing: ".2em", color: "#7CFFB2",
@@ -675,7 +668,7 @@ function Planos() {
               inauguração, dia 12 de setembro.
             </p>
           </div>
-        </Reveal>
+        </Reveal>}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 items-stretch">
           {PLANOS.map((p, i) => (
@@ -690,17 +683,21 @@ function Planos() {
                 )}
                 <span className="font-mono text-silver" style={{ fontSize: 11, letterSpacing: ".3em", textTransform: "uppercase" }}>{p.nome}</span>
                 <div className="mt-5">
-                  <div className="text-silver text-sm" style={{ textDecoration: "line-through", opacity: .7 }}>
-                    R$ {p.cheio}/mês
-                  </div>
+                  {FUNDADORA && (
+                    <div className="text-silver text-sm" style={{ textDecoration: "line-through", opacity: .7 }}>
+                      R$ {p.cheio}/mês
+                    </div>
+                  )}
                   <div className="flex items-baseline gap-1 mt-1">
                     <span className="text-silver text-sm">R$</span>
-                    <span className="font-display silver-gradient" style={{ fontSize: 34, fontWeight: 800 }}>{p.preco}</span>
+                    <span className="font-display silver-gradient" style={{ fontSize: 34, fontWeight: 800 }}>{FUNDADORA ? p.preco : p.cheio}</span>
                     <span className="text-silver text-sm font-light">/mês</span>
                   </div>
-                  <div className="font-mono mt-2" style={{ fontSize: 10, letterSpacing: ".15em", color: "#7CFFB2" }}>
-                    -10% PREÇO DE FUNDADORA
-                  </div>
+                  {FUNDADORA && (
+                    <div className="font-mono mt-2" style={{ fontSize: 10, letterSpacing: ".15em", color: "#7CFFB2" }}>
+                      -10% PREÇO DE FUNDADORA
+                    </div>
+                  )}
                 </div>
                 <ul className="mt-7 flex flex-col gap-3 flex-1">
                   {p.itens.map((it) => (
@@ -718,29 +715,84 @@ function Planos() {
           ))}
         </div>
 
-        <Reveal delay={500}>
-          <div className="glass rounded-3xl p-8 mt-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <span className="font-mono text-silver" style={{ fontSize: 11, letterSpacing: ".3em", textTransform: "uppercase" }}>Sem plano</span>
-              <h4 className="font-display text-white text-xl mt-3" style={{ fontWeight: 700 }}>Aula avulsa</h4>
-              <p className="text-silver text-sm font-light mt-2" style={{ maxWidth: 460 }}>
-                Sem mensalidade. Escolha o dia, pague online e sua bike fica reservada.
-                Fins de semana são sempre avulsos.
-              </p>
-            </div>
-            <div className="flex flex-col sm:items-center gap-4 shrink-0 w-full md:w-auto">
-              <div className="flex items-baseline gap-1">
-                <span className="text-silver text-sm">R$</span>
-                <span className="font-display silver-gradient" style={{ fontSize: 40, fontWeight: 800 }}>30</span>
-              </div>
-              <a href={`${SISTEMA}/?tipo=avulsa`} className="btn btn-ghost" style={{ padding: "13px 28px", fontSize: 13 }}>
-                Agendar avulsa
-              </a>
-            </div>
-          </div>
-        </Reveal>
       </div>
     </section>
+  );
+}
+
+/* ---------------- Como funciona ---------------- */
+const PASSOS = [
+  { n: "01", t: "Escolha o dia e o horário", d: "Veja as aulas disponíveis e as bikes livres." },
+  { n: "02", t: "Pague online", d: "Sua bike fica reservada na hora, sem combinar por mensagem." },
+  { n: "03", t: "Chegue e pedale", d: "A gente cuida da música, da luz e do ritmo. Você só pedala." },
+];
+
+function ComoFunciona() {
+  return (
+    <section id="como-funciona" className="py-28 lg:py-36 px-6">
+      <div className="max-w-6xl mx-auto">
+        <Reveal><span className="eyebrow">Como funciona</span></Reveal>
+        <Reveal delay={120}>
+          <h3 className="font-display text-white mt-6 mb-14 tracking-tight" style={{ fontSize: "clamp(30px,3.6vw,46px)", fontWeight: 700 }}>
+            Da dúvida à bike <span className="text-silver">em três passos.</span>
+          </h3>
+        </Reveal>
+        <div className="grid md:grid-cols-3 gap-6">
+          {PASSOS.map((p, i) => (
+            <Reveal key={p.n} delay={i * 100} className="h-full">
+              <div className="glass rounded-3xl p-8 h-full">
+                <span className="font-mono text-silver" style={{ fontSize: 13 }}>{p.n}</span>
+                <h4 className="font-display text-white text-lg mt-4 mb-2" style={{ fontWeight: 600 }}>{p.t}</h4>
+                <p className="text-silver text-sm font-light leading-relaxed">{p.d}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Perguntas frequentes ---------------- */
+const FAQ = [
+  { q: "Como funciona a aula avulsa?", a: "Sem mensalidade. Você escolhe o dia, paga online e sua bike fica reservada." },
+  { q: "Posso treinar no fim de semana?", a: "Sim. Os planos valem de segunda a sexta, e fins de semana são sempre avulsos." },
+  { q: "Como ganho a segunda aula?", a: "Pague sua primeira aula avulsa e a segunda é por nossa conta. Sem plano, sem fidelidade." },
+  { q: "E se eu travar no agendamento?", a: "Chame no WhatsApp que a gente resolve com você." },
+];
+
+function Faq() {
+  return (
+    <section id="duvidas" className="py-28 lg:py-36 px-6 bg-graphite" style={{ borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
+      <div className="max-w-3xl mx-auto">
+        <Reveal><span className="eyebrow">Dúvidas</span></Reveal>
+        <Reveal delay={120}>
+          <h3 className="font-display text-white mt-6 mb-10 tracking-tight" style={{ fontSize: "clamp(30px,3.6vw,44px)", fontWeight: 700 }}>
+            Dúvidas comuns
+          </h3>
+        </Reveal>
+        <div>
+          {FAQ.map((f) => (
+            <details key={f.q} className="group py-5" style={{ borderTop: "1px solid var(--line)" }}>
+              <summary className="font-display text-white text-lg cursor-pointer" style={{ fontWeight: 600, minHeight: 44 }}>{f.q}</summary>
+              <p className="text-silver text-sm font-light leading-relaxed mt-3">{f.a}</p>
+            </details>
+          ))}
+          <div style={{ borderTop: "1px solid var(--line)" }} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Botão flutuante de WhatsApp ---------------- */
+function WhatsFloat() {
+  return (
+    <a href={WHATSAPP} target="_blank" rel="noreferrer" aria-label="Falar no WhatsApp"
+      className="fixed z-40 glass-strong rounded-full flex items-center justify-center"
+      style={{ right: 20, bottom: 20, width: 56, height: 56 }}>
+      <MessageCircle size={24} strokeWidth={1.5} className="text-white" />
+    </a>
   );
 }
 
@@ -777,8 +829,6 @@ function Experimental() {
 
 /* ---------------- Contato ---------------- */
 function Contato() {
-  const [sent, setSent] = useState(false);
-  const [form, setForm] = useState({ nome: "", tel: "", msg: "" });
   const canais = [
     { icon: MessageCircle, t: "WhatsApp", d: "(11) 93330-2350", href: WHATSAPP },
     { icon: Instagram, t: "Instagram", d: "@pulsar.spinning", href: "https://instagram.com/pulsar.spinning" },
@@ -881,14 +931,17 @@ export default function PulsarLanding() {
       <main>
         <Hero />
         <Sobre />
+        <ComoFunciona />
         <Estrutura />
         <Experiencia />
-        <Localizacao />
         <Planos />
+        <Localizacao />
+        <Faq />
         <Experimental />
         <Contato />
       </main>
       <Footer />
+      <WhatsFloat />
     </div>
   );
 }
