@@ -4,6 +4,7 @@ import {
   MapPin, Mail, Instagram, MessageCircle,
   Menu, X, ArrowRight, Activity, Music, Zap, HeartPulse, Navigation
 } from "lucide-react";
+import { ENDERECO, HORARIOS, FOTOS, DEPOIMENTOS } from "./dados.js";
 
 /* ============================================================
    PULSAR BIKE INDOOR — Landing Page Premium
@@ -567,6 +568,10 @@ function Localizacao() {
                 <MapPin size={26} className="text-white" strokeWidth={1.5} />
               </div>
             </div>
+            {ENDERECO.mapsEmbed && (
+              <iframe title="Mapa do PULSAR" src={ENDERECO.mapsEmbed} loading="lazy" referrerPolicy="no-referrer-when-downgrade"
+                className="absolute inset-0 w-full h-full" style={{ border: 0, filter: "grayscale(1) invert(.92) contrast(.9)" }} />
+            )}
             <div className="absolute bottom-5 left-5 glass-strong rounded-2xl px-5 py-3">
               <div className="font-display text-white text-sm" style={{ fontWeight: 600 }}>Bom Jesus dos Perdões — SP</div>
               <div className="font-mono text-silver" style={{ fontSize: 10, letterSpacing: ".2em" }}>23°08'S · 46°28'W</div>
@@ -580,6 +585,12 @@ function Localizacao() {
               No coração de<br /><span className="silver-gradient">Bom Jesus dos Perdões.</span>
             </h3>
           </Reveal>
+          {(ENDERECO.linha || ENDERECO.referencia) && (
+            <Reveal delay={160}>
+              <p className="text-white mt-6 text-lg">{ENDERECO.linha}</p>
+              {ENDERECO.referencia && <p className="text-silver font-light mt-1">{ENDERECO.referencia}</p>}
+            </Reveal>
+          )}
           <div className="mt-8 flex flex-col gap-4">
             {[
               { icon: Navigation, t: "Fácil acesso", d: "Poucos minutos das principais vias da cidade." },
@@ -598,7 +609,7 @@ function Localizacao() {
           </div>
           <Reveal delay={520}>
             <a
-              href="https://www.google.com/maps/search/?api=1&query=Bom+Jesus+dos+Perd%C3%B5es+SP"
+              href={ENDERECO.mapsLink || "https://www.google.com/maps/search/?api=1&query=Bom+Jesus+dos+Perd%C3%B5es+SP"}
               target="_blank" rel="noreferrer" className="btn btn-primary mt-10"
             >
               Como chegar <Navigation size={15} />
@@ -748,6 +759,80 @@ function ComoFunciona() {
             </Reveal>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Horários (só aparece com dados) ---------------- */
+function Horarios() {
+  if (!HORARIOS.length) return null;
+  return (
+    <section id="horarios" className="py-28 lg:py-36 px-6">
+      <div className="max-w-6xl mx-auto">
+        <Reveal><span className="eyebrow">Grade de aulas</span></Reveal>
+        <Reveal delay={120}>
+          <h3 className="font-display text-white mt-6 mb-4 tracking-tight" style={{ fontSize: "clamp(30px,3.6vw,46px)", fontWeight: 700 }}>
+            Quando você pode <span className="text-silver">pedalar.</span>
+          </h3>
+        </Reveal>
+        <Reveal delay={160}>
+          <p className="text-silver font-light mb-12" style={{ maxWidth: 560 }}>
+            Planos valem de segunda a sexta. Fins de semana são sempre aula avulsa.
+          </p>
+        </Reveal>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {HORARIOS.map((h, i) => (
+            <Reveal key={h.dia} delay={i * 80} className="h-full">
+              <div className="glass rounded-3xl p-7 h-full">
+                <h4 className="font-display text-white text-lg mb-4" style={{ fontWeight: 600 }}>{h.dia}</h4>
+                <ul className="flex flex-wrap gap-2">
+                  {h.aulas.map((a) => (
+                    <li key={a} className="font-mono text-silver-hi rounded-full px-4 py-2" style={{ fontSize: 13, border: "1px solid var(--line)" }}>{a}</li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Galeria e depoimentos (só aparece com dados) ---------------- */
+function Galeria() {
+  if (!FOTOS.length && !DEPOIMENTOS.length) return null;
+  return (
+    <section id="galeria" className="py-28 lg:py-36 px-6">
+      <div className="max-w-6xl mx-auto">
+        <Reveal><span className="eyebrow">Dentro do studio</span></Reveal>
+        <Reveal delay={120}>
+          <h3 className="font-display text-white mt-6 mb-12 tracking-tight" style={{ fontSize: "clamp(30px,3.6vw,46px)", fontWeight: 700 }}>
+            Veja antes <span className="text-silver">de vir.</span>
+          </h3>
+        </Reveal>
+        {FOTOS.length > 0 && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+            {FOTOS.map((f, i) => (
+              <Reveal key={f.src} delay={i * 70}>
+                <img src={f.src} alt={f.alt} loading="lazy" className="rounded-3xl w-full object-cover" style={{ aspectRatio: "1 / 1", border: "1px solid var(--line)" }} />
+              </Reveal>
+            ))}
+          </div>
+        )}
+        {DEPOIMENTOS.length > 0 && (
+          <div className="grid md:grid-cols-2 gap-6">
+            {DEPOIMENTOS.map((d, i) => (
+              <Reveal key={d.nome + i} delay={i * 100} className="h-full">
+                <figure className="glass rounded-3xl p-8 h-full">
+                  <blockquote className="font-display text-white text-lg leading-snug" style={{ fontWeight: 600 }}>{d.texto}</blockquote>
+                  <figcaption className="font-mono text-silver mt-5" style={{ fontSize: 12, letterSpacing: ".15em" }}>{d.nome}</figcaption>
+                </figure>
+              </Reveal>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
@@ -932,8 +1017,10 @@ export default function PulsarLanding() {
         <Hero />
         <Sobre />
         <ComoFunciona />
+        <Galeria />
         <Estrutura />
         <Experiencia />
+        <Horarios />
         <Planos />
         <Localizacao />
         <Faq />
